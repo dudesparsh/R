@@ -1,0 +1,10 @@
+R Commands 1
+
+#to know current working directory
+getwd() 
+
+# to set the working directory
+# in inverted commas enter the desired location
+
+setwd("C:/Users/admin/Documents/R/Practice")
+

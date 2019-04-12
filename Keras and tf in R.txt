@@ -1,0 +1,15 @@
+# for installing keras
+
+
+library(devtools)
+devtools::install_github("rstudio/keras")
+#devtools::install_github("rstudio/tensorflow")
+library(keras)
+install_keras()
+#library(tensorflow)
+#install_tensorflow()
+
+
+
+
+
