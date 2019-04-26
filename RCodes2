@@ -1,0 +1,162 @@
+# Machine Learning course BITS F464
+# Lab 9,10,11 Code - Not tested till now
+
+#ML Lab code ( Sparsh) - 26 April 2019
+
+#Lab 9 ( Not tested )
+
+
+
+#Decision trees
+install.packages("party")
+
+#Loading the party & other package
+library(party)
+
+#Creating a input dataframe
+input.dat <- readingSklls[c(1:105),]
+
+#Giving the chart file a name
+png(file ="decision_tree.png")
+
+#Creating a tree
+output.tree <- ctree(
+  nativeSpeaker ~ age + shoeSize + score,
+  data = input.dat)
+
+
+#Plotting the tree
+plot(output.tree)
+
+#Saving the file
+dev.off()
+
+# Part 2
+#Random Foreses
+install.packages("randomForest")
+
+#library(party) #already done
+library(randomForest)
+
+#Creating the forest
+output.forest <- randomForest(nativeSpeaker ~ age + shoeSize + score,
+                              data = readingSkills)
+
+#Viewing the forest results
+print(output.forest)
+
+#Importance of each predictor
+print(importance(fit,type =2))
+
+
+
+
+#Lab 10 ( Not tested )
+
+
+# Bayesian Belief networks
+
+install.packages("bnlearn")
+package(bnlearn)
+
+
+#using the coronary dataset
+data(coronary)
+
+#learning the structure of the data
+
+bn_df <- data.frame(coronary)
+rest <- hc(bn_df)
+plot(rest)
+
+#modifying derived structure
+res$arcs <- res$arcs[-which((res$arcs[,'from'] == "M..Work" &
+                               res$arcs[,'to'] == "Family")),]
+
+#training our model
+fittedbn <- bn.fit(res, data=bn_df)
+
+#Inferring from our bayesian network
+cpquery(fittedbn, event = (Proteins=="<3"), evidence =
+          (Smoking=="no" & Pressure==">140"))
+
+
+## Part 2 - Hidden Markov Model ( HMM )
+
+# Required Library
+library(depmixS4)
+
+# Loading the data
+physician_prescription_data <- c(12,16,45,45,56,67,78,98,10,124,156)
+
+# Executing the model
+HMM_model <- depmixS4::depmix(physician_prescription_data~1,
+nstates = 2, ntimes=length(physician_prescription_data))
+
+# Fitting the model
+HMM_fm <- fit(HMM_model)
+
+#Transition probabilities
+HMM_fm@transition
+
+# Posterior states
+posterior(HMM_fm)
+plot(ts(posterior(HMM_fm)[,1]))
+
+# Emission probabilities
+HMM_fm@response
+
+
+#Lab 11 Code ( Untested )
+
+# Multilayer perceptron
+
+#installing packages
+install.packages("neuralnet")
+library("neuralnet")
+data <- data.frame(name = c("A","B","C","D","E","F","G","H"),x=
+                     c(0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0),
+                   y = c(0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0),
+                   output = c(0,1,1,0,1,1,1,0))
+
+#Scaling the data
+maxs <- as.numeric(apply(data[2:length(data)],2,max))
+mins <- as.numeric(apply(data[2:length(data)],2,min))
+
+
+# 2 used as argument suggests that the function
+#is applied to each column indivisually
+
+scale <- as.data.frame(scale(data[2:length(data)],
+                             center = mins,
+                             scale = maxs - mins))
+
+#scale can't be applied to non numeric values
+
+#random sampling
+
+samplesize = 0.60*nrow(data)
+set.seed(80)
+index = sample(seq_len(nrow(data)), size = samplesize)
+train_ <- scaled[index,]
+test_ <- scaled[index,]
+
+# Defining our network
+
+NN = neuralnet(output~x+y, train_, hidden = c(3,3), linear.output = T)
+plot(NN)
+
+
+#Prediction
+predict_testNN = compute(NN, test_[,c(1:2)])
+predict_testNN = (predict_testNN$net.result
+                  *(max(data$output)-min(data$output)))
+                  + min(data$output)
+
+
+#calculating the Root mean square error (RMSE)
+RMSE = (sum((test_unscaled$output - predict_testNN)^2)
+        /nrow(test_unscaled))^0.5
+
+
+Lab 12 tested Code in Google colab
